@@ -1,0 +1,31 @@
+language: node_js
+node_js:
+- '8'
+services:
+- mongodb
+#addons:
+#  ssh_known_hosts: XXX.XXX.XXX.XXX
+#before_script:
+#- echo -e "Host XXX.XXX.XXX.XXXntStrictHostKeyChecking non" >> ~/.ssh/config
+#- chmod u+x scripts/deploy_wip.sh
+#- chmod u+x scripts/deploy.sh
+#- npm install grunt-cli -g
+#- cd angular-app && npm install && cd ..
+#- npm install -g @angular/cli
+#deploy:
+#- provider: script
+#  skip_cleanup: true
+#  script: $TRAVIS_BUILD_DIR/scripts/deploy_wip.sh $TRAVIS_BRANCH
+#  on:
+#    all_branches: true
+#- provider: script
+#  skip_cleanup: true
+#  script: $TRAVIS_BUILD_DIR/scripts/deploy.sh
+#  on:
+#    branch: master
+#before_deploy:
+#- openssl aes-256-cbc -K $encrypted_cbbb6a90bd15_key -iv $encrypted_cbbb6a90bd15_iv
+#  -in ea0.enc -out /tmp/ea0 -d
+#- eval "$(ssh-agent -s)"
+#- chmod 600 /tmp/ea0
+#- ssh-add /tmp/ea0
