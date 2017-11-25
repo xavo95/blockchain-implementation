@@ -45,7 +45,7 @@ app.use('/api', router.router);
 
 // Start the server
 var configPort = process.env.PORT;
-var port = (configPort !== undefined ? configPort : 8888);
+var port = (configPort !== undefined ? configPort : 8889);
 var server = app.listen(port, function () {
     logger.log('info', "Listening on 127.0.0.1:" + server.address().port, 'app.js', 'root');
 });
