@@ -2,10 +2,11 @@
 
 var express = require('express');
 var router = express.Router();
-var exampleRouter = require('./exampleroute/example');
+var blockchainRouter = require('./blockchainroute/blockchain');
 
 
-router.get('/example', exampleRouter.mapIndex);
+router.get('/example', blockchainRouter.mapIndex);
+router.get('/generate_new_contract', blockchainRouter.generateNewContract);
 
 
 module.exports.router = router;
