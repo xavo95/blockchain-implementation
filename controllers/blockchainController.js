@@ -115,8 +115,20 @@ var generateNewContract = function (callback, tracking_no) {
     });
 };
 
+// Function to get all contracts
+var getAllContracts = function (callback) {
+    contractsController.getContracts(callback);
+};
+
+// Function to get a contract by tacking number
+var getContractByTrackingNumber = function (callback, tracking) {
+    contractsController.getContractByTracking(callback, tracking);
+};
+
 
 ////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
 
 
 module.exports.generateNewContract = generateNewContract;
+module.exports.getAllContracts = getAllContracts;
+module.exports.getContractByTrackingNumber = getContractByTrackingNumber;

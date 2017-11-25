@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 
 
 var ContractSchema = new mongoose.Schema({
-    tracking_no: {type: String, required: true},
+    tracking_no: {type: String, required: true, index: {unique: true}},
     contract_address: {type: String, required: true}
 });
 
