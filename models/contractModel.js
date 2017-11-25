@@ -2,10 +2,17 @@
 
 var mongoose = require('mongoose');
 
+
+/////////////////////////////////////////////////// MONGOOSE MODEL ///////////////////////////////////////////////////
+
+
 var ContractSchema = new mongoose.Schema({
-    name: {type: String, required: true},
-    username: {type: String, required: true},
-    age: {type: Number, required: true, default: 0}
+    tracking_no: {type: String, required: true},
+    contract_address: {type: String, required: true}
 });
+
+
+////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
+
 
 module.exports = mongoose.model('Contract', ContractSchema);

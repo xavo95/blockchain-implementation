@@ -47,9 +47,10 @@ app.use('/api', router.router);
 var configPort = process.env.PORT;
 var port = (configPort !== undefined ? configPort : 8888);
 var server = app.listen(port, function () {
-    logger.log('info', "Listening on port " + server.address().port, 'app.js', 'root');
+    logger.log('info', "Listening on 127.0.0.1:" + server.address().port, 'app.js', 'root');
 });
 
+// Start Mongo client
 var configMongoURL = process.env.MONGODB;
 var mongoURL = (configMongoURL !== undefined ? configMongoURL : 'mongodb://localhost:27017/blockchain-implementation');
 mongoose.connect(mongoURL, {
@@ -59,7 +60,11 @@ mongoose.connect(mongoURL, {
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Error connecting to database:'));
 db.once('open', function() {
-    logger.log('info', "Connected to the database...", 'app.js', 'root');
+    logger.log('info', "Connected to the database at " + mongoURL, 'app.js', 'root');
 });
+
+
+////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
+
 
 module.exports.server = server;

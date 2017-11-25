@@ -1,5 +1,11 @@
+# IDE folders
 .idea
+
+# Config files
 .env
+
+# Data folder
+/testrpc_db
 
 # dependencies
 **/node_modules
@@ -12,5 +18,4 @@
 results.txt
 
 # Special files
-/ea0
 /scripts

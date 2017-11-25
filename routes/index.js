@@ -5,8 +5,14 @@ var router = express.Router();
 var blockchainRouter = require('./blockchainroute/blockchain');
 
 
+/////////////////////////////////////////////////// ROUTER MAPPING ///////////////////////////////////////////////////
+
+
 router.get('/example', blockchainRouter.mapIndex);
-router.get('/generate_new_contract', blockchainRouter.generateNewContract);
+router.post('/generate_new_contract', blockchainRouter.generateNewContract);
+
+
+////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
 
 
 module.exports.router = router;

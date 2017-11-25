@@ -26,6 +26,7 @@
     "express-timestamp": "0.1.4",
     "express-winston": "2.4.0",
     "method-override": "2.3.10",
+    "mkdirp": "0.5.1",
     "moment": "2.19.0",
     "mongoose": "4.12.1",
     "solc": "0.4.18",

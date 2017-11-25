@@ -1,21 +1,46 @@
 'use strict';
 
+require('dotenv').config();
 var fs = require('fs');
-
+var path = require("path");
 var Web3 = require('web3');
 var solc = require('solc');
 var testRPC = require('ethereumjs-testrpc');
-var mongoose = require('mongoose');
+var mkdirp = require('mkdirp');
 
 
+var contractsController = require('./dbController');
 var logger = require('./../routes/utils/loggerfactory');
+
+
+// Get all the config variables
+var configTestRPCMnemonic = process.env.TESTRPCMNEMONIC;
+var testRPCMnemonic = (configTestRPCMnemonic !== undefined ? configTestRPCMnemonic : 'dead fish racket soul plunger dirty boats cracker mammal nicholas cage');
+var configTestRPCTotalAccounts = process.env.TESTRPCTOTALACCOUNTS;
+var testRPCTotalAccounts = (configTestRPCTotalAccounts !== undefined ? configTestRPCTotalAccounts : 10);
+var configTestRPCPath = process.env.TESTRPCPATH;
+var testRPCPath = (configTestRPCPath !== undefined ? configTestRPCPath : 'testrpc_db');
+var configTestRPCPort = process.env.TESTRPCPORT;
+var testRPCPort = (configTestRPCPort !== undefined ? configTestRPCPort : 8545);
+
+// Create the directory for blockchain persistency
+mkdirp(path.join(process.cwd(), '/' + testRPCPath), function(err){
+    if (err) {
+        logger.log('error', 'Errors happened while creating the directory: ' + err, 'controllers/blockchainController.js', 'root');
+    }
+    logger.log('info', 'Directory created successfully at ' + testRPCPath + ' !', 'controllers/blockchainController.js', 'root');
+});
+
+// Set up the provider and log the status
 var web3 = new Web3(testRPC.provider({
     debug: true,
-    mnemonic: 'dead fish racket soul plunger dirty boats cracker mammal nicholas cage',
-    total_accounts: 10,
-    unlocked_accounts: [0, 1, 2]
+    mnemonic: testRPCMnemonic,
+    total_accounts: testRPCTotalAccounts,
+    unlocked_accounts: [0, 1, 2],
+    db_path: testRPCPath,
+    port: testRPCPort
 }));
-logger.log('info', 'Ethereum network configured correctly', 'routes/blockchainroute/blockchain.js', 'root');
+logger.log('info', 'Ethereum network configured correctly', 'controllers/blockchainController.js', 'root');
 
 
 // Compile the source code
@@ -23,9 +48,14 @@ var input = fs.readFileSync('./contracts/TruckContract.sol');
 var output = solc.compile(input.toString(), 1);
 var bytecode = output.contracts[':TruckContract'].bytecode;
 var abi = JSON.parse(output.contracts[':TruckContract'].interface);
-var STATIC_ADDRESS = '0xc31eb6e317054a79bb5e442d686cb9b225670c1d';
+var configStaticAddress = process.env.STATICADDRESS;
+var STATIC_ADDRESS = (configStaticAddress !== undefined ? configStaticAddress : '0xc31eb6e317054a79bb5e442d686cb9b225670c1d');
 
 
+/////////////////////////////////////////////////// PRIVATE METHODS ///////////////////////////////////////////////////
+
+
+// Function to convert array from blockchain to dictionary
 var arrayToIncidentData = function (toConvert) {
     return {
         temperature: toConvert[0],
@@ -36,25 +66,29 @@ var arrayToIncidentData = function (toConvert) {
     };
 };
 
+// Function that returns a promise that resolves upon contract modification
 var setIncidentData = function (contract, temperature, delay, pressure, light, breakageAlert) {
     return new Promise(function (resolve) {
         contract.methods.setIncidentData(temperature, delay, pressure, light, breakageAlert).send({from: STATIC_ADDRESS})
             .then(function () {
-                logger.log('info', 'Successfully modified contract', 'routes/blockchainroute/blockchain.js', 'setIncidentData');
+                logger.log('info', 'Successfully modified contract', 'controllers/blockchainController.js', 'setIncidentData');
                 resolve();
             });
     });
 };
 
 
-var generateNewContract = function () {
+/////////////////////////////////////////////////// PUBLIC METHODS ///////////////////////////////////////////////////
+
+
+// Function that generates a new contract and saves his address onto the database with the tracking number as reference
+var generateNewContract = function (callback, tracking_no) {
     // Contract object
-    var contract = new web3.eth.Contract(abi, {
-        from: STATIC_ADDRESS,
-        gasPrice: '2000000000',
-        gas: 90000 * 2,
-        data: '0x' + bytecode
-    });
+    var contract = new web3.eth.Contract(abi);
+    contract.options.from = STATIC_ADDRESS;
+    contract.options.gasPrice = '2000000000';
+    contract.options.gas = 90000 * 2;
+    contract.options.data = '0x' + bytecode;
 
     contract.deploy({
         arguments: ['Default Contract']
@@ -71,25 +105,18 @@ var generateNewContract = function () {
         logger.log('info', 'Receipt received, new contract address: ' + receipt.contractAddress, 'routes/blockchainroute/blockchain.js', 'root');
     }).on('confirmation', function (confirmationNumber, receipt) {
     }).then(function (newContractInstance) {
-        newContractInstance.methods.getContractAddress().call(function (error, result) {
-
+        newContractInstance.methods.getContractAddress().call(function (error, address) {
+            if (error) {
+                return callback(error)
+            } else {
+                contractsController.addContract(callback, tracking_no, address);
+            }
         });
-        // newContractInstance.methods.getIncidentData().call(function (error, result) {
-        //     var incident_data = arrayToIncidentData(result);
-        //     console.log(incident_data);
-        //
-        //     setIncidentData(newContractInstance, 1, 2, 3, 4, 5).then(function () {
-        //         newContractInstance.methods.getContractAddress().call(function (error, result) {
-        //             var MyContract = new web3.eth.Contract(abi, result);
-        //             MyContract.methods.getIncidentData().call(function (error, result) {
-        //                 var incident_data = arrayToIncidentData(result);
-        //                 console.log(incident_data);
-        //             });
-        //         });
-        //     });
-        // });
     });
 };
+
+
+////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
 
 
 module.exports.generateNewContract = generateNewContract;
