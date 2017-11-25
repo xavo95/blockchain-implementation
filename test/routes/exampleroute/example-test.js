@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require("mongoose");
-var Example = require('../../../routes/exampleroute/example');
+var Example = require('../../../routes/blockchainroute/blockchain');
 
 //Require the dev-dependencies
 var chai = require('chai');
