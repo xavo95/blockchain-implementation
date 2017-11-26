@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 
 
 var middlewareLoggerTimestamp = require('./middlewares/middlewareLoggerTimestamp');
+var middlewareCors = require('./middlewares/middlewareCors');
 var router = require('./routes/index');
 var logger = require('./routes/utils/loggerfactory');
 
@@ -22,11 +23,7 @@ app.use(compression());
 // Enable Logging Express
 app.use(logger.getExpressLogger());
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, token, userData");
-    next();
-});
+app.use(middlewareCors.corsMiddleware);
 
 // Setup a global middleware example
 app.use(middlewareLoggerTimestamp.loggerTimestampMiddleware);

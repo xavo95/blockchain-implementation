@@ -4,6 +4,44 @@ var blockchainController = require('./../../controllers/blockchainController');
 var logger = require('./../utils/loggerfactory');
 
 
+/////////////////////////////////////////////////// PRIVATE METHODS ///////////////////////////////////////////////////
+
+
+// Function to update by address
+var updateByAddres = function (req, res, address) {
+    var temperature = req.body.temperature;
+    if (temperature === null || temperature === undefined || temperature === '') {
+        temperature = 0;
+    }
+    var delay = req.body.delay;
+    if (delay === null || delay === undefined || delay === '') {
+        delay = 0;
+    }
+    var pressure = req.body.pressure;
+    if (pressure === null || pressure === undefined || pressure === '') {
+        pressure = 0;
+    }
+    var light = req.body.light;
+    if (light === null || light === undefined || light === '') {
+        light = 0;
+    }
+    var breakageAlert = req.body.breakageAlert;
+    if (breakageAlert === null || breakageAlert === undefined || breakageAlert === '') {
+        breakageAlert = 0;
+    }
+    var callback = function (err) {
+        if (err) {
+            logger.log('error', 'Error performing the query: ' + err, 'routes/blockchainroute/blockchain.js', 'updateContract');
+            return res.status(503).send({message: 'Error performing the query: ' + err});
+        } else {
+            logger.log('info', 'Contract data updated successfully at address: ' + address, 'routes/blockchainroute/blockchain.js', 'updateContract');
+            return res.status(200).send({message: 'Contract data updated successfully at address: ' + address});
+        }
+    };
+    blockchainController.updateContractByAddress(callback, address, temperature, delay, pressure, light, breakageAlert);
+};
+
+
 /////////////////////////////////////////////////// PUBLIC METHODS ///////////////////////////////////////////////////
 
 
@@ -79,6 +117,37 @@ var getContractByTrackingNumber = function (req, res) {
     }
 };
 
+// Function to get a contract by tacking number
+var getContractData = function (req, res) {
+    var address = req.params.address;
+    if (address === null || address === undefined || address === '') {
+        logger.log('error', 'Invalid address', 'routes/blockchainroute/blockchain.js', 'getContractData');
+        return res.status(503).send({message: 'Invalid address'});
+    } else {
+        var callback = function (err, info) {
+            if (err) {
+                logger.log('error', 'Error performing the query: ' + err, 'routes/blockchainroute/blockchain.js', 'getContractData');
+                return res.status(503).send({message: 'Error performing the query: ' + err});
+            } else {
+                logger.log('info', 'Contract data retrieved successfully at address: ' + address, 'routes/blockchainroute/blockchain.js', 'getContractData');
+                return res.status(200).send(blockchainController.arrayToIncidentData(info));
+            }
+        };
+        blockchainController.getContractData(callback, address);
+    }
+};
+
+// Function to update the contract
+var updateContractByAddress = function (req, res) {
+    var address = req.params.address;
+    if (address === null || address === undefined || address === '') {
+        logger.log('error', 'Invalid address', 'routes/blockchainroute/blockchain.js', 'getContractData');
+        return res.status(503).send({message: 'Invalid address'});
+    } else {
+        updateByAddres(req, res, address);
+    }
+};
+
 
 ////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
 
@@ -87,3 +156,5 @@ module.exports.mapIndex = mapIndex;
 module.exports.generateNewContract = generateNewContract;
 module.exports.getAllContracts = getAllContracts;
 module.exports.getContractByTrackingNumber = getContractByTrackingNumber;
+module.exports.getContractData = getContractData;
+module.exports.updateContractByAddress = updateContractByAddress;
