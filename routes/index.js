@@ -14,7 +14,7 @@ router.get('/get_all_contracts', blockchainRouter.getAllContracts);
 router.get('/get_contract_by_id/:tracking_no', blockchainRouter.getContractByTrackingNumber);
 router.get('/get_contract_data_by_address/:address', blockchainRouter.getContractData);
 router.put('/update_contract_data_by_address/:address', blockchainRouter.updateContractByAddress);
-//router.put('/update_contract_data_by_tracking/:tracking_no', blockchainRouter.updateContractByTracking);
+router.put('/update_contract_data_by_tracking/:tracking_no', blockchainRouter.updateContractByTracking);
 
 
 ////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
