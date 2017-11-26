@@ -32,7 +32,7 @@ contract TruckContract {
         return incidentData.temperature;
     }
 
-    function setTemperature(int _temperature) public {
+    function setTemperature(int _temperature) private {
         incidentData.temperature = _temperature;
     }
 
@@ -40,7 +40,7 @@ contract TruckContract {
         return incidentData.delay;
     }
 
-    function setDelay(int _delay) public {
+    function setDelay(int _delay) private {
         incidentData.delay = _delay;
     }
 
@@ -48,7 +48,7 @@ contract TruckContract {
         return incidentData.pressure;
     }
 
-    function setPressure(int _pressure) public {
+    function setPressure(int _pressure) private {
         incidentData.pressure = _pressure;
     }
 
@@ -56,7 +56,7 @@ contract TruckContract {
         return incidentData.light;
     }
 
-    function setLight(int _light) public {
+    function setLight(int _light) private {
         incidentData.light = _light;
     }
 
@@ -64,7 +64,7 @@ contract TruckContract {
         return incidentData.breakageAlert;
     }
 
-    function setBreakageAlert(int _breakageAlert) public {
+    function setBreakageAlert(int _breakageAlert) private {
         incidentData.breakageAlert = _breakageAlert;
     }
 
