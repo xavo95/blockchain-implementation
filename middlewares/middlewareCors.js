@@ -1,14 +1,13 @@
 'use strict';
 
-var moment = require('moment');
-
 
 /////////////////////////////////////////////////// PUBLIC METHODS ///////////////////////////////////////////////////
 
 
 // Function to inject the timestamp into the requests
-var loggerTimestampMiddleware = function (req, res, next) {
-    req.timestamp = moment().format();
+var corsMiddleware = function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, token, userData");
     next();
 };
 
@@ -16,4 +15,4 @@ var loggerTimestampMiddleware = function (req, res, next) {
 ////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
 
 
-module.exports.loggerTimestampMiddleware = loggerTimestampMiddleware;
+module.exports.corsMiddleware = corsMiddleware;

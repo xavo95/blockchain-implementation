@@ -5,6 +5,10 @@ var expressWinston = require('express-winston');
 var moment = require('moment');
 
 
+/////////////////////////////////////////////////// PRIVATE METHODS ///////////////////////////////////////////////////
+
+
+// Function that returns a logger with custom parameters
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
@@ -13,6 +17,7 @@ var logger = new (winston.Logger)({
     ]
 });
 
+// Function that returns a logger with custom parameters for express
 var expressLogger = new expressWinston.logger({
     transports: [
         new winston.transports.Console({
@@ -27,14 +32,22 @@ var expressLogger = new expressWinston.logger({
 });
 
 
+/////////////////////////////////////////////////// PUBLIC METHODS ///////////////////////////////////////////////////
+
+
+// Function to use the customized logger
 function log(level, message, filePath, functionName) {
     var logMessage = '[' + moment().format() + '] ' + message + ' on file (' + filePath + ')@' + functionName;
     logger.log(level, logMessage);
 }
 
+// Function that returns the instance for express logger
 function getExpressLogger() {
     return expressLogger;
 }
+
+
+////////////////////////////////////////////////////// EXPORTS //////////////////////////////////////////////////////
 
 
 module.exports.log = log;

@@ -1,30 +1,14 @@
+# IDE folders
 .idea
+
+# Config files
 .env
 
-# Grunt ouput
-build/
-release/
-
-# compiled output
-angular-app/dist
-angular-app/tmp
-angular-app/out-tsc
+# Data folder
+/testrpc_db
 
 # dependencies
 **/node_modules
-
-# misc
-angular-app/.sass-cache
-angular-app/connect.lock
-angular-app/coverage
-angular-app/libpeerconnection.log
-angular-app/npm-debug.log
-angular-app/testem.log
-angular-app/typings
-
-# e2e
-angular-app/e2e/*.js
-angular-app/e2e/*.map
 
 # System Files
 **/.DS_Store
@@ -34,5 +18,4 @@ angular-app/e2e/*.map
 results.txt
 
 # Special files
-/ea0
 /scripts

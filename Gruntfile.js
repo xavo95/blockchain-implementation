@@ -19,6 +19,7 @@ module.exports = function(grunt) {
         mochaTest: {
             test: {
                 options: {
+                    useColors: true,
                     reporter: 'spec',
                     captureFile: 'results.txt',
                     quiet: false,
